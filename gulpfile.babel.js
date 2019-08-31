@@ -24,7 +24,6 @@ const htmlmin = require( "gulp-htmlmin" );
 const prefix = require( "gulp-autoprefixer" );
 const sourcemaps = require( "gulp-sourcemaps" );
 const uglify = require( "gulp-uglify" );
-const critical = require( "critical" );
 const sw = require( "sw-precache" );
 
 // Image Generation
@@ -84,29 +83,6 @@ gulp.task( "js", () => {
     .pipe( gulp.dest( dist.js ) )
     .pipe( browserSync.reload( { stream: true } ) )
     .pipe( gulp.dest( "assets/js" ) );
-} );
-
-gulp.task( "critical", done => {
-  critical.generate( {
-    base: "_site/",
-    src: "index.html",
-    css: [ "assets/css/main.css" ],
-    dimensions: [ {
-      width: 320,
-      height: 480
-    }, {
-      width: 768,
-      height: 1024
-    }, {
-      width: 1280,
-      height: 960
-    } ],
-    dest: "../_includes/critical.css",
-    minify: true,
-    extract: false,
-    ignore: [ "@font-face" ]
-  } );
-  done();
 } );
 
 // Minify HTML
@@ -209,7 +185,7 @@ gulp.task( "serve", function() {
   } );
 } );
 
-gulp.task( "styles", gulp.series( [ "sass", "critical" ] ) );
+gulp.task( "styles", gulp.series( [ "sass" ] ) );
 
 gulp.task( "watch", () => {
   gulp.watch( "_sass/**/*.scss", gulp.series( "styles" ) );
@@ -228,7 +204,6 @@ gulp.task( "build", gulp.series( [
   "clean",
   gulp.parallel( [ "sass", "js", "img" ] ),
   "jekyll-build",
-  "critical",
   "sw"
 ] ) );
 
